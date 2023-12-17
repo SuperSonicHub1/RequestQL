@@ -1,0 +1,70 @@
+# TODO:
+# create Text type (regex, slice, number conversion)
+# Flesh out Node type
+# Allow user to send and download bodies via data: URIs
+# Give everything docstrings
+
+
+type JSONObject {
+	entry(key: String!): JSONValue
+}
+
+type JSONValue {
+	object: JSONObject
+	array: [JSONValue]
+	string: String
+	number: Float
+	boolean: Boolean
+}
+
+
+type KeyValue {
+	key: String!
+	value: String!
+}
+
+type Node {
+	select(selector: String!): Node
+	selectAll(selector: String!): [Node!]
+	tag: String!
+	text: String!
+	html: String!
+	attribute(key: String!): String
+	attributes: [KeyValue!]
+	has(selector: String!): Boolean!
+	# children: [Node!]!
+}
+
+type Response {
+	statusCode: Int!
+	headers: [KeyValue!]
+	text: String!
+	json: JSONValue
+	html: Node
+}
+
+input KeyValueInput {
+	key: String!
+	value: String!
+}
+
+enum HTTPMethod {
+	GET
+	HEAD
+	POST
+	PUT
+	DELETE
+	CONNECT
+	OPTIONS
+	TRACE
+	PATCH
+}
+
+type Query {
+	# Add some sort of way to send a body
+	request(url: String, method: HTTPMethod = GET, headers: [KeyValueInput!] = []): Response
+}
+
+schema {
+	query: Query
+}
